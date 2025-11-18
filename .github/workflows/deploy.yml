@@ -1,0 +1,35 @@
+# .github/workflows/deploy.yml
+
+# Workflow 이름
+name: Deploy to EC2
+
+# 트리거: main 브랜치에 push 시 실행
+on:
+  push:
+    branches:
+      - main
+
+# 작업 정의
+jobs:
+  deploy:
+    # Ubuntu 최신 버전에서 실행
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # 4. EC2 배포
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # shop-redis 디렉토리로 이동
+            cd ~/shop-redis
+            git pull
+            docker compose down
+            docker compose up -d --build
+            
+           
+
