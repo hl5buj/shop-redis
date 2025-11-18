@@ -41,7 +41,7 @@ services:
 
     ports:
       # 호스트:컨테이너 포트 매핑
-      - "8080:8000"
+      - "8081:8000"
 
     environment:
       # Django 환경변수
