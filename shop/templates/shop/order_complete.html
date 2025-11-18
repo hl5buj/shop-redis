@@ -1,4 +1,5 @@
 {% extends 'shop/base.html' %}
+{% load shop_filters %}
 
 {% block title %}주문 완료 - 라이온 쇼핑몰{% endblock %}
 
@@ -22,7 +23,7 @@
                 <p><strong>연락처:</strong> {{ order.customer_phone }}</p>
                 <p><strong>주문일시:</strong> {{ order.created_at|date:"Y년 m월 d일 H:i" }}</p>
                 <hr>
-                <p class="mb-0"><strong>총 결제금액:</strong> <span class="text-primary fs-5">{{ order.total_price|floatformat:0 }}원</span></p>
+                <p class="mb-0"><strong>총 결제금액:</strong> <span class="text-primary fs-5">{{ order.total_price|currency }}원</span></p>
             </div>
         </div>
 

@@ -50,7 +50,7 @@
                                 <span class="text-muted">x{{ item.quantity }}</span>
                             </div>
                             <div class="text-end">
-                                <small class="text-primary">{{ item.price|multiply:item.quantity|floatformat:0 }}원</small>
+                                <small class="text-primary">{{ item.price|multiply:item.quantity|currency }}원</small>
                             </div>
                         </li>
                         {% endfor %}
@@ -58,7 +58,7 @@
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">총액</h4>
-                        <h4 class="mb-0 text-primary">{{ total|floatformat:0 }}원</h4>
+                        <h4 class="mb-0 text-primary">{{ total|currency }}원</h4>
                     </div>
                 </div>
             </div>

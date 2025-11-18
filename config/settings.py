@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# .env 파일 로드
+# load_dotenv()는 프로젝트 루트의 .env 파일을 찾아서
+# 그 안의 KEY=VALUE 쌍을 os.environ에 자동으로 추가합니다
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +27,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ds3c*w*ugnm*b2v%%5^u1(!c8ey!!zu(x4uk4(+dvtwi85o!wy'
+# 환경변수에서 SECRET_KEY를 가져옵니다
+# .env 파일에 없으면 기본값(두 번째 인자)을 사용합니다
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key-for-dev-only')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# 환경변수의 DEBUG 값을 문자열로 받아서 불리언으로 변환
+# 'True', 'true', '1' 이면 True, 나머지는 False
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+# 배포 시 접속 가능한 호스트를 제한합니다
+# 콤마로 구분된 문자열을 리스트로 변환
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -71,14 +84,37 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# <https://docs.djangoproject.com/en/5.1/ref/settings/#databases>
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# 환경변수에서 데이터베이스 엔진 확인
+DB_ENGINE = os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3')
+
+# SQLite 사용 시
+if 'sqlite3' in DB_ENGINE:
+    DATABASES = {
+        'default': {
+            'ENGINE': DB_ENGINE,
+            'NAME': BASE_DIR / os.environ.get('DATABASE_NAME', 'db.sqlite3'),
+        }
     }
-}
+# PostgreSQL 사용 시
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': DB_ENGINE,
+            'NAME': os.environ.get('DATABASE_NAME', 'ecommerce_db'),
+            'USER': os.environ.get('DATABASE_USER', 'postgres'),
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+            'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
+            'PORT': os.environ.get('DATABASE_PORT', '5432'),
+            'OPTIONS': {
+                # 연결 유지 시간 (초)
+                # 0이면 매 요청마다 새 연결, 600이면 10분간 연결 유지
+                'connect_timeout': 10,
+            },
+        }
+    }
+
 
 
 # Password validation
@@ -125,3 +161,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 미디어 파일 설정 (업로드된 이미지 등)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+

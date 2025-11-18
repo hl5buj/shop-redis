@@ -1,4 +1,5 @@
 {% extends 'shop/base.html' %}
+{% load shop_filters %}
 
 {% block title %}{{ product.name }} - 라이온 쇼핑몰{% endblock %}
 
@@ -19,7 +20,7 @@
             <h1>{{ product.name }}</h1>
             <p class="text-muted"><i class="bi bi-eye"></i> 조회수: {{ product.views }}</p>
             <hr>
-            <h3 class="text-primary mb-3">{{ product.price|floatformat:0 }}원</h3>
+            <h3 class="text-primary mb-3">{{ product.price|currency }}원</h3>
             <p class="lead">{{ product.description|linebreaks }}</p>
 
             {% if product.stock > 0 %}

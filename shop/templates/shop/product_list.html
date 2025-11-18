@@ -23,7 +23,7 @@
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text text-truncate">{{ product.description }}</p>
                     <div class="mt-auto">
-                        <p class="text-primary fw-bold fs-5 mb-2">{{ product.price|floatformat:0 }}원</p>
+                        <p class="text-primary fw-bold fs-5 mb-2">{{ product.price|currency }}원</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">재고: {{ product.stock }}개</small>
                             <small class="text-muted">조회 {{ product.views }}</small>
