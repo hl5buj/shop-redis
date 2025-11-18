@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 # .env 파일 로드
@@ -89,29 +89,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # 환경변수에서 데이터베이스 엔진 확인
 DB_ENGINE = os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3')
 
-# SQLite 사용 시
-if 'sqlite3' in DB_ENGINE:
+if 'postgresql' in DB_ENGINE:
     DATABASES = {
         'default': {
-            'ENGINE': DB_ENGINE,
-            'NAME': BASE_DIR / os.environ.get('DATABASE_NAME', 'db.sqlite3'),
-        }
-    }
-# PostgreSQL 사용 시
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': DB_ENGINE,
+            'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.environ.get('DATABASE_NAME', 'ecommerce_db'),
             'USER': os.environ.get('DATABASE_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
             'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
             'PORT': os.environ.get('DATABASE_PORT', '5432'),
             'OPTIONS': {
-                # 연결 유지 시간 (초)
-                # 0이면 매 요청마다 새 연결, 600이면 10분간 연결 유지
                 'connect_timeout': 10,
             },
+        }
+    }
+else:
+    # SQLite 사용 (로컬 개발)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
@@ -152,6 +149,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
